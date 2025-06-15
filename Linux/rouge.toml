@@ -1,0 +1,114 @@
+#:schema https://creativeprojects.github.io/resticprofile/jsonschema/config-1.json
+#
+#backup disque USB WD MyPassport 2To rouge
+#2 partitions exFat : 1To + 863 Go
+#
+# resticprofile  --config rouge profiles
+# resticprofile -c rouge home.init
+# resticprofile -c rouge home.backup
+
+
+version = "1"
+
+[global]
+   prevent-sleep = true
+
+[default]
+   password-file = "~/.config/resticprofile/restic-password.txt"
+
+  [default.backup]
+    verbose = false
+    exclude-caches = true
+    one-file-system = true
+
+
+[home]
+  inherit = "default"
+  repository = "local:/run/media/jerome/BACKUP1-2/backup-home/"
+
+  [home.backup]
+  tag = [ "home" ]
+  source-base = "/home/"
+  source-relative = true
+  source  = [ "jerome/"]
+  exclude = [ "jerome/tmp/","jerome/.cache/"]
+
+[ebooks]
+    inherit = "default"
+    repository = "local:/run/media/jerome/BACKUP1-2/backup-ebooks/"
+
+    [ebooks.backup]
+    #compression = false
+    tag = [ "ebooks" ]
+    source-base = "/mnt/hd2/podcasts/"
+    source-relative = true
+    source = [ "ebooks-bibebook-epub",
+               "ebooks-calibre",
+               "ebooks-classiques",
+               "ebooks-packt",
+               "fonts"]
+
+[music]
+  inherit = "default"
+  repository = "local:/run/media/jerome/BACKUP1-1/backup-music/"
+
+  [music.backup]
+  tag = [ "music" ]
+  source-base = "/mnt/hd2/music/"
+  source-relative = true
+  source = [ "Qobuz/",
+              "audio/",
+              "booklets/",
+              "docs/",
+              "lyrics",
+              "video/"]
+
+[ogg]
+  inherit = "default"
+  repository = "local:/run/media/jerome/BACKUP1-1/backup-ogg/"
+
+  [ogg.backup]
+  tag = [ "music" ]
+  source-base = "/mnt/hd2/music/"
+  source-relative = true
+  source = [ "_encodage"]
+
+[photos]
+    inherit = "default"
+    repository = "local:/run/media/jerome/BACKUP1-1/backup-photos/"
+
+    [photos.backup]
+    #compression = false
+    tag = [ "photos" ]
+    source-base = "/mnt/hd2/photos/"
+    source-relative = true
+    source = [ "Appareils/",
+                "Photos/",
+                "Smartphones/",
+                "Docs/"]
+
+
+[podcasts]
+    inherit = "default"
+    repository = "local:/run/media/jerome/BACKUP1-2/backup-podcasts/"
+
+    [podcasts.backup]
+    #compression = false
+    tag = [ "podcasts" ]
+    source-base = "/mnt/hd2/podcasts/"
+    source-relative = true
+    source = [ "Audio Books/", "podcasts/"]
+
+[video]
+  inherit = "default"
+  repository = "local:/run/media/jerome/BACKUP1-2/backup-video/"
+
+  [video.backup]
+  tag = [ "video" ]
+  source-base = "/mnt/hd2/video/"
+  source-relative = true
+  source = [  "divx-G/",
+              "divX-H/",
+              "Nemo/"]
+
+

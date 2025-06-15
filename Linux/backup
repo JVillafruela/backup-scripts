@@ -1,0 +1,62 @@
+#!/bin/bash
+
+#script de backup sur disque dur externe
+#
+#prérequis
+# dans le PATH : restic et resticprofile
+# disque dur monté
+# rouge : /run/media/jerome/BACKUP1-1/ et BACKUP1-2
+# noir  : /run/media/jerome/BACKUP2-1/ et BACKUP2-2
+
+#appel :
+# backup noir  #backup sur disque noir
+# backup rouge #backup sur disque rouge
+
+
+function dobackup() {
+  if [ -z "$1" ] || [ -z "$2" ]; then
+    echo "Usage: dobackup <color> <data>"
+    echo "Error: Both 'color' and 'data' parameters are mandatory."
+    return 1 # Indicate an error
+  fi
+
+  local color="$1" # Assign the first argument to 'color'
+  local data="$2"  # Assign the second argument to 'data'
+
+  local msg="Backup $data on hard disk $color"
+  echo "$msg"
+
+  systemd-inhibit --what sleep --why "$msg" resticprofile -c $color $data.backup #--dry-run
+}
+
+#merci Gemini :-)
+
+# Check if exactly one argument is provided
+if [ "$#" -ne 1 ]; then
+  echo "Error: This script requires exactly one argument."
+  echo "Usage: $0 <HDD color>"
+  echo "The HDD color can be 'noir' or 'rouge'."
+  exit 1
+fi
+
+# Get the parameter
+color="$1"
+
+# Convert to lowercase for case-insensitive comparison
+color_lower=$(echo "$color" | tr '[:upper:]' '[:lower:]')
+
+if [ "$color_lower" != "noir" ] && [ "$color_lower" != "rouge" ]; then
+  echo "Error: Invalid color specified."
+  echo "The color must be 'noir' or 'rouge'."
+  exit 1
+fi
+
+dobackup  $color_lower home
+dobackup  $color_lower ebooks
+dobackup  $color_lower music
+dobackup  $color_lower ogg
+dobackup  $color_lower photos
+dobackup  $color_lower podcasts
+dobackup  $color_lower video
+
+exit 0
